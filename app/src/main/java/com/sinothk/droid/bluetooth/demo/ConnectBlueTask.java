@@ -5,10 +5,10 @@ import android.bluetooth.BluetoothSocket;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.sinothk.droid.bluetooth.demo.inter.ConnectBlueCallBack;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.UUID;
 
 /**
  * 连接线程

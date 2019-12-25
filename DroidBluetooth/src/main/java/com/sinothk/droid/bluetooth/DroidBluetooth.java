@@ -97,6 +97,15 @@ public class DroidBluetooth {
     }
 
     /**
+     * 判断蓝牙是否打开
+     *
+     * @return
+     */
+    public static boolean isBond(BluetoothDevice device) {
+        return device.getBondState() == BluetoothDevice.BOND_NONE;
+    }
+
+    /**
      * 配对（配对成功与失败通过广播返回）
      *
      * @param device

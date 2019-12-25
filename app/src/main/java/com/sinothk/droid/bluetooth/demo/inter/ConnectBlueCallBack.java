@@ -1,4 +1,4 @@
-package com.sinothk.droid.bluetooth.demo;
+package com.sinothk.droid.bluetooth.demo.inter;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
