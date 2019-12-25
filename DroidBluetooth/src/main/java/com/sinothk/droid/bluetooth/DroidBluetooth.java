@@ -1,15 +1,19 @@
 package com.sinothk.droid.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import java.lang.reflect.Method;
 
 
 /**
  * https://www.cnblogs.com/lwkdbk/p/9939643.html
  */
 public class DroidBluetooth {
-
+    private static String TAG = "DroidBluetooth";
     private static BluetoothAdapter blueAdapter;
     private static boolean support;
 
@@ -89,6 +93,68 @@ public class DroidBluetooth {
         if (blueAdapter.isDiscovering()) {
             //判断蓝牙是否正在扫描，如果是调用取消扫描方法；如果不是，则开始扫描
             blueAdapter.cancelDiscovery();
+        }
+    }
+
+    /**
+     * 配对（配对成功与失败通过广播返回）
+     *
+     * @param device
+     */
+    public static void pin(BluetoothDevice device) {
+        if (device == null) {
+            Log.e(TAG, "bond device null");
+            return;
+        }
+        if (!isOpen()) {
+            Log.e(TAG, "Bluetooth 没打开!");
+            return;
+        }
+        //配对之前把扫描关闭
+        if (blueAdapter.isDiscovering()) {
+            blueAdapter.cancelDiscovery();
+        }
+        //判断设备是否配对，没有配对在配，配对了就不需要配了
+        if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+            Log.d(TAG, "attemp to bond:" + device.getName());
+            try {
+                Method createBondMethod = device.getClass().getMethod("createBond");
+                Boolean returnValue = (Boolean) createBondMethod.invoke(device);
+                Log.e(TAG, "匹配结果：" + returnValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "匹配结果：异常");
+            }
+        }
+    }
+
+
+    /**
+     * 取消配对（取消配对成功与失败通过广播返回 也就是配对失败）
+     *
+     * @param device
+     */
+    public void cancelPinBule(BluetoothDevice device) {
+        if (device == null) {
+            Log.d(TAG, "cancel bond device null");
+            return;
+        }
+        if (!isOpen()) {
+            Log.e(TAG, "Bluetooth not enable!");
+            return;
+        }
+        //判断设备是否配对，没有配对就不用取消了
+        if (device.getBondState() != BluetoothDevice.BOND_NONE) {
+            Log.d(TAG, "attemp to cancel bond:" + device.getName());
+            try {
+                Method removeBondMethod = device.getClass().getMethod("removeBond");
+                Boolean returnValue = (Boolean) removeBondMethod.invoke(device);
+                returnValue.booleanValue();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Log.e(TAG, "attemp to cancel bond fail!");
+            }
         }
     }
 }
