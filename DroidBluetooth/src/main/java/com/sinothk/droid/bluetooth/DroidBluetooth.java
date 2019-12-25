@@ -40,11 +40,22 @@ public class DroidBluetooth {
     }
 
     /**
+     * 关闭蓝牙
+     */
+    public static void close() {
+        //判断本机蓝牙是否打开
+        if (blueadapter.isEnabled()) {//如果没打开，则打开蓝牙
+            blueadapter.disable();
+        }
+    }
+
+    /**
      * 判断蓝牙是否打开
      *
      * @return
      */
-    public static boolean isEnable() {
+    public static boolean isOpen() {
         return blueadapter.isEnabled();
     }
+
 }
