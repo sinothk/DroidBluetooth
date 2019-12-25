@@ -1,24 +1,30 @@
 package com.sinothk.droid.bluetooth.demo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.sinothk.droid.bluetooth.DroidBluetooth
 import kotlinx.android.synthetic.main.activity_main_bluetooth_demo.*
 
-class BluetoothDemoMainActivity : AppCompatActivity(), View.OnClickListener {
+
+class BluetoothDemoMainActivity : BaseActivity(), View.OnClickListener {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_bluetooth_demo)
+
+        initData()
 
         initBtn.setOnClickListener(this)
         supportBtn.setOnClickListener(this)
         openBtn.setOnClickListener(this)
         isOpenBtn.setOnClickListener(this)
         closeBtn.setOnClickListener(this)
+
+        //
+        setVisibleBtn.setOnClickListener(this)
+        searchBluetoothBtn.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -50,6 +56,14 @@ class BluetoothDemoMainActivity : AppCompatActivity(), View.OnClickListener {
 
             closeBtn -> {
                 DroidBluetooth.close()
+            }
+
+            setVisibleBtn -> {
+                DroidBluetooth.setVisible(this, 60)
+            }
+
+            searchBluetoothBtn -> {
+                DroidBluetooth.searchBluetooth()
             }
         }
     }

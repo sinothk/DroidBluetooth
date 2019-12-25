@@ -2,7 +2,12 @@ package com.sinothk.droid.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 
+
+/**
+ * https://www.cnblogs.com/lwkdbk/p/9939643.html
+ */
 public class DroidBluetooth {
 
     private static BluetoothAdapter blueAdapter;
@@ -58,4 +63,28 @@ public class DroidBluetooth {
         return blueAdapter.isEnabled();
     }
 
+    /**
+     * 设置多少秒内可见
+     *
+     * @param mContext
+     * @param timeSec
+     */
+    public static void setVisible(Context mContext, int timeSec) {
+        if (blueAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            //不在可被搜索的范围
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, timeSec);//设置本机蓝牙在300秒内可见
+            mContext.startActivity(discoverableIntent);
+        }
+    }
+
+    public static void searchBluetooth() {
+        if (blueAdapter.isDiscovering()) {
+            //判断蓝牙是否正在扫描，如果是调用取消扫描方法；如果不是，则开始扫描
+            blueAdapter.cancelDiscovery();
+        } else
+            blueAdapter.startDiscovery();
+
+
+    }
 }
