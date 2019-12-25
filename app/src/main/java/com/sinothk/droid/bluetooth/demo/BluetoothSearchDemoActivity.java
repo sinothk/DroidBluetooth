@@ -78,6 +78,9 @@ public class BluetoothSearchDemoActivity extends BluetoothBaseActivity {
                             DroidBluetooth.pin(bluetoothDevice);
                         } else {
                             showMsg("已匹配");
+
+
+
                         }
                         break;
                     case 1:
