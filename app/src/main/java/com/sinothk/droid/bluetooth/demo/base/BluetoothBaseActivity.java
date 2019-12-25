@@ -143,7 +143,7 @@ public abstract class BluetoothBaseActivity extends AppCompatActivity implements
                 switch (device.getBondState()) {
                     case BluetoothDevice.BOND_NONE:
                         Log.d(TAG, "取消配对");
-                        callBack.onBondFail(device);
+                        callBack.onBondCancel(device);
                         break;
                     case BluetoothDevice.BOND_BONDING:
                         Log.d(TAG, "配对中");

@@ -7,7 +7,7 @@ public interface PinBlueCallBack {
 
     void onBondSuccess(BluetoothDevice device);
 
-    void onBondFail(BluetoothDevice device);
+    void onBondCancel(BluetoothDevice device);
 
     void onBondRequest();
 }

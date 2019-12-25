@@ -97,12 +97,12 @@ public class DroidBluetooth {
     }
 
     /**
-     * 判断蓝牙是否打开
+     * 判断蓝牙是否已匹配
      *
      * @return
      */
     public static boolean isBond(BluetoothDevice device) {
-        return device.getBondState() == BluetoothDevice.BOND_NONE;
+        return device.getBondState() == BluetoothDevice.BOND_BONDED;
     }
 
     /**
@@ -143,7 +143,7 @@ public class DroidBluetooth {
      *
      * @param device
      */
-    public void cancelPinBule(BluetoothDevice device) {
+    public static void cancelPinBule(BluetoothDevice device) {
         if (device == null) {
             Log.d(TAG, "cancel bond device null");
             return;

@@ -9,10 +9,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.sinothk.droid.bluetooth.DroidBluetooth;
 import com.sinothk.droid.bluetooth.demo.base.BluetoothBaseActivity;
+import com.sinothk.droid.bluetooth.demo.inter.OnEventListener;
 
 import java.util.ArrayList;
 
@@ -67,15 +67,26 @@ public class BluetoothSearchDemoActivity extends BluetoothBaseActivity {
         adapter = new BluetoothListAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        adapter.setEventListener(new BluetoothListAdapter.EventListener() {
+        adapter.setEventListener(new OnEventListener() {
             @Override
-            public void callback(BluetoothDevice bluetoothDevice) {
+            public void callback(int eventType, BluetoothDevice bluetoothDevice) {
                 DroidBluetooth.cancelDiscover();
 
-                if (DroidBluetooth.isBond(bluetoothDevice)) {
-                    DroidBluetooth.pin(bluetoothDevice);
-                } else {
-                    showMsg("已匹配");
+                switch (eventType) {
+                    case 0:
+                        if (!DroidBluetooth.isBond(bluetoothDevice)) {
+                            DroidBluetooth.pin(bluetoothDevice);
+                        } else {
+                            showMsg("已匹配");
+                        }
+                        break;
+                    case 1:
+                        if (DroidBluetooth.isBond(bluetoothDevice)) {
+                            DroidBluetooth.cancelPinBule(bluetoothDevice);
+                        } else {
+                            showMsg("未匹配");
+                        }
+                        break;
                 }
             }
         });
@@ -113,7 +124,7 @@ public class BluetoothSearchDemoActivity extends BluetoothBaseActivity {
     }
 
     @Override
-    public void onBondFail(BluetoothDevice device) {
-        showMsg("匹配失败");
+    public void onBondCancel(BluetoothDevice device) {
+        showMsg("匹配取消");
     }
 }

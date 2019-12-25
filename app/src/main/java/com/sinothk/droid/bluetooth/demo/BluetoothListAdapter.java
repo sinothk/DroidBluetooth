@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sinothk.droid.bluetooth.demo.inter.OnEventListener;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
 
     Context mContext;
     ArrayList<BluetoothDevice> dataList;
-    EventListener eventListener;
+    OnEventListener eventListener;
 
     BluetoothListAdapter(Context context) {
         mContext = context;
@@ -47,7 +49,15 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
         holder.rootItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventListener.callback(bluetoothEntity);
+                eventListener.callback(0, bluetoothEntity);
+            }
+        });
+
+        holder.rootItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                eventListener.callback(1, bluetoothEntity);
+                return true;
             }
         });
     }
@@ -69,13 +79,7 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
         }
     }
 
-    public void setEventListener(EventListener eventListener) {
+    public void setEventListener(OnEventListener eventListener) {
         this.eventListener = eventListener;
-    }
-
-    public interface EventListener {
-
-        void callback(BluetoothDevice bluetoothEntity);
-
     }
 }
