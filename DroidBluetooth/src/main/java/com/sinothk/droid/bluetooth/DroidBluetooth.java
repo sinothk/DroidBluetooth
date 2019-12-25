@@ -78,13 +78,17 @@ public class DroidBluetooth {
         }
     }
 
-    public static void searchBluetooth() {
+    public static void doDiscover() {
+        if (!blueAdapter.isDiscovering()) {
+            blueAdapter.startDiscovery();
+        }
+    }
+
+
+    public static void cancelDiscover() {
         if (blueAdapter.isDiscovering()) {
             //判断蓝牙是否正在扫描，如果是调用取消扫描方法；如果不是，则开始扫描
             blueAdapter.cancelDiscovery();
-        } else
-            blueAdapter.startDiscovery();
-
-
+        }
     }
 }
