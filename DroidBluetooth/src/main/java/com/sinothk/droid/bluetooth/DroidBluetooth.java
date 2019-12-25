@@ -2,6 +2,7 @@ package com.sinothk.droid.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
@@ -185,32 +186,138 @@ public class DroidBluetooth {
     }
 
     public static void connect(final BluetoothDevice device) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-//            Log.d(TAG,"开始连接socket,uuid:" + ClassicsBluetooth.UUID);
-
-                    UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
-                    bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-
-//                    bluetoothSocket = (BluetoothSocket) device.getClass().getDeclaredMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
-
-                    if (bluetoothSocket != null && !bluetoothSocket.isConnected()) {
-                        bluetoothSocket.connect();
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "socket连接失败");
+                    bluetoothSocket.connect();
+                    Log.e("", "Connected");
+                } catch (Exception e) {
+                    Log.e("", e.getMessage());
                     try {
-                        bluetoothSocket.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                        Log.e(TAG, "socket关闭失败");
+                        Log.e("", "trying fallback...");
+
+                        bluetoothSocket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
+                        bluetoothSocket.connect();
+
+                        Log.e("", "Connected");
+                    } catch (Exception e2) {
+                        Log.e("", "Couldn't establish Bluetooth connection!");
                     }
                 }
             }
         }).start();
+
+
+
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+////            Log.d(TAG,"开始连接socket,uuid:" + ClassicsBluetooth.UUID);
+//
+//                    UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+//                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+//
+////                    Method listenMethod = device.getClass().getMethod("listenUsingRfcommOn", new Class[]{int.class});
+////                    BluetoothServerSocket returnValue = ( BluetoothServerSocket) listenMethod.invoke(blueAdapter, new Object[]{ 29});
+//
+////                    bluetoothSocket = (BluetoothSocket) device.getClass().getDeclaredMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
+//
+////                    if (bluetoothSocket != null && !bluetoothSocket.isConnected()) {
+////                        bluetoothSocket.connect();
+////                    }
+//
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                bluetoothSocket.connect();
+//
+//                                if (isConnectBlue()) {
+//                                    Log.e(TAG, "已连接");
+//                                } else {
+//                                    Log.e(TAG, "未连接");
+//                                }
+//
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                                Log.e(TAG, "连接异常");
+//                            }
+//                        }
+//                    }.start();
+//
+//                } catch (IOException e) {
+//                    Log.e(TAG, "socket连接失败");
+//                    try {
+//                        bluetoothSocket.close();
+//                    } catch (IOException e1) {
+//                        e1.printStackTrace();
+//                        Log.e(TAG, "socket关闭失败");
+//                    }
+//                }
+////                catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+////                    e.printStackTrace();
+////                    Log.e(TAG, "连接异常");
+////                }
+//            }
+//        }).start();
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    //获得一个socket，安卓4.2以前蓝牙使用此方法，获得socket，4.2后为下面的方法
+//                    //不能进行配对
+//                    // final BluetoothSocket socket = device.createRfcommSocketToServiceRecord
+//                    // (UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+//
+//                    //安卓系统4.2以后的蓝牙通信端口为 1 ，但是默认为 -1，所以只能通过反射修改，才能成功
+//                    final BluetoothSocket bluetoothSocket = (BluetoothSocket) device.getClass()
+//                            .getDeclaredMethod("createRfcommSocket", new Class[]{int.class})
+//                            .invoke(device, 1);
+//
+//                    Thread.sleep(500);
+//
+//                    //这里建立蓝牙连接 socket.connect() 这句话必须单开一个子线程
+//                    //至于原因 暂时不知道为什么
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                bluetoothSocket.connect();
+//
+//                                if (isConnectBlue()) {
+//                                    Log.e(TAG, "已连接");
+//                                } else {
+//                                    Log.e(TAG, "未连接");
+//                                }
+//
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                                Log.e(TAG, "连接异常");
+//                            }
+//                        }
+//                    }.start();
+//
+//                    //建立蓝牙连接
+//
+//                    //获得一个输出流
+////                    outputStream = socket.getOutputStream();
+////                    inputStream = socket.getInputStream();
+////                    runOnUiThread(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            Toast.makeText(MainActivity.this, ""连接成功"", Toast.LENGTH_SHORT).show();
+////                        }
+////                    });
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
     }
 
     /**
@@ -218,7 +325,7 @@ public class DroidBluetooth {
      *
      * @return
      */
-    public boolean isConnectBlue() {
+    public static boolean isConnectBlue() {
         return bluetoothSocket != null && bluetoothSocket.isConnected();
     }
 
