@@ -2,11 +2,16 @@ package com.sinothk.droid.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -16,6 +21,7 @@ public class DroidBluetooth {
     private static String TAG = "DroidBluetooth";
     private static BluetoothAdapter blueAdapter;
     private static boolean support;
+    private static BluetoothSocket bluetoothSocket = null;
 
     /**
      * 初始化
@@ -105,6 +111,17 @@ public class DroidBluetooth {
         return device.getBondState() == BluetoothDevice.BOND_BONDED;
     }
 
+
+    /**
+     * 获取已绑定的设备
+     *
+     * @return
+     */
+    public static Set<BluetoothDevice> getBondedDevices() {
+        return blueAdapter.getBondedDevices();
+    }
+
+
     /**
      * 配对（配对成功与失败通过广播返回）
      *
@@ -165,5 +182,62 @@ public class DroidBluetooth {
                 Log.e(TAG, "attemp to cancel bond fail!");
             }
         }
+    }
+
+    public static void connect(final BluetoothDevice device) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+//            Log.d(TAG,"开始连接socket,uuid:" + ClassicsBluetooth.UUID);
+
+                    UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+                    bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+
+//                    bluetoothSocket = (BluetoothSocket) device.getClass().getDeclaredMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
+
+                    if (bluetoothSocket != null && !bluetoothSocket.isConnected()) {
+                        bluetoothSocket.connect();
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "socket连接失败");
+                    try {
+                        bluetoothSocket.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                        Log.e(TAG, "socket关闭失败");
+                    }
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 蓝牙是否连接
+     *
+     * @return
+     */
+    public boolean isConnectBlue() {
+        return bluetoothSocket != null && bluetoothSocket.isConnected();
+    }
+
+
+    /**
+     * 断开连接
+     *
+     * @return
+     */
+    public boolean closeConnect() {
+        if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
+            try {
+                bluetoothSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        bluetoothSocket = null;
+        return true;
     }
 }

@@ -1,7 +1,9 @@
 package com.sinothk.droid.bluetooth.demo;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,7 +16,10 @@ import com.sinothk.droid.bluetooth.DroidBluetooth;
 import com.sinothk.droid.bluetooth.demo.base.BluetoothBaseActivity;
 import com.sinothk.droid.bluetooth.demo.inter.OnEventListener;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class BluetoothSearchDemoActivity extends BluetoothBaseActivity {
 
@@ -77,10 +82,8 @@ public class BluetoothSearchDemoActivity extends BluetoothBaseActivity {
                         if (!DroidBluetooth.isBond(bluetoothDevice)) {
                             DroidBluetooth.pin(bluetoothDevice);
                         } else {
-                            showMsg("已匹配");
-
-
-
+                            showMsg("已匹配，开始连接");
+                            DroidBluetooth.connect(bluetoothDevice);
                         }
                         break;
                     case 1:
