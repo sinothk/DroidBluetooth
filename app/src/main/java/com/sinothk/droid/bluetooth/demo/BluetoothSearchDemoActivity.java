@@ -104,17 +104,12 @@ public class BluetoothSearchDemoActivity extends AppCompatActivity {
 
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+                assert device != null;
                 Log.e("bluetoothReceiver", "设备名：" + device.getName() + "\n" + "设备地址：" + device.getAddress() + "\n");
 
 //                deviceName.add("设备名：" + device.getName() + "\n" + "设备地址：" + device.getAddress() + "\n");//将搜索到的蓝牙名称和地址添加到列表。
 //                arrayList.add(device.getAddress());//将搜索到的蓝牙地址添加到列表。
 //                adapter.notifyDataSetChanged();//更新
-
-//                BluetoothEntity bluetooth = new BluetoothEntity();
-//                bluetooth.setName(device.getName());
-//                bluetooth.setAddress(device.getAddress());
-//                bluetooth.setBondState(device.getBondState());
-//                bluetooth.setType(device.getType());
 
                 list.add(device);
                 adapter.setDataList(list);
