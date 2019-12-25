@@ -1,6 +1,7 @@
 package com.sinothk.droid.bluetooth.demo;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sinothk.droid.bluetooth.DroidBluetooth;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class BluetoothSearchDemoActivity extends AppCompatActivity {
@@ -24,7 +27,7 @@ public class BluetoothSearchDemoActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Button searchBluetoothBtn, closeSearchBluetoothBtn;
 
-    ArrayList<BluetoothEntity> list = new ArrayList<>();
+    ArrayList<BluetoothDevice> list = new ArrayList<>();
     BluetoothListAdapter adapter;
 
     @Override
@@ -61,6 +64,25 @@ public class BluetoothSearchDemoActivity extends AppCompatActivity {
 
         adapter = new BluetoothListAdapter(this);
         recyclerView.setAdapter(adapter);
+
+        adapter.setEventListener(new BluetoothListAdapter.EventListener() {
+            @Override
+            public void callback(BluetoothDevice bluetoothEntity) {
+                try {
+                    connect(bluetoothEntity);
+                } catch (NoSuchMethodException | IOException | IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void connect(BluetoothDevice device) throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+        DroidBluetooth.cancelDiscover();
+        final BluetoothSocket socket = (BluetoothSocket) device.getClass().getDeclaredMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
+
+        assert socket != null;
+        socket.connect();//连接
     }
 
     protected void onDestroy() {
@@ -88,13 +110,13 @@ public class BluetoothSearchDemoActivity extends AppCompatActivity {
 //                arrayList.add(device.getAddress());//将搜索到的蓝牙地址添加到列表。
 //                adapter.notifyDataSetChanged();//更新
 
-                BluetoothEntity bluetooth = new BluetoothEntity();
-                bluetooth.setName(device.getName());
-                bluetooth.setAddress(device.getAddress());
-                bluetooth.setBondState(device.getBondState());
-                bluetooth.setType(device.getType());
+//                BluetoothEntity bluetooth = new BluetoothEntity();
+//                bluetooth.setName(device.getName());
+//                bluetooth.setAddress(device.getAddress());
+//                bluetooth.setBondState(device.getBondState());
+//                bluetooth.setType(device.getType());
 
-                list.add(bluetooth);
+                list.add(device);
                 adapter.setDataList(list);
             }
         }

@@ -1,5 +1,6 @@
 package com.sinothk.droid.bluetooth.demo;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +17,15 @@ import java.util.ArrayList;
 public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdapter.BluetoothViewHolder> {
 
     Context mContext;
-    ArrayList<BluetoothEntity> dataList;
+    ArrayList<BluetoothDevice> dataList;
+    EventListener eventListener;
 
     BluetoothListAdapter(Context context) {
         mContext = context;
         dataList = new ArrayList<>();
     }
 
-    void setDataList(ArrayList<BluetoothEntity> list) {
+    void setDataList(ArrayList<BluetoothDevice> list) {
         dataList.clear();
         dataList.addAll(list);
         notifyDataSetChanged();
@@ -37,7 +39,7 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
 
     @Override
     public void onBindViewHolder(BluetoothViewHolder holder, int position) {
-        BluetoothEntity bluetoothEntity = dataList.get(position);
+        final BluetoothDevice bluetoothEntity = dataList.get(position);
 
         holder.nameTv.setText(bluetoothEntity.getName());
         holder.addressTv.setText(bluetoothEntity.getAddress());
@@ -45,7 +47,7 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
         holder.rootItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                eventListener.callback(bluetoothEntity);
             }
         });
     }
@@ -65,5 +67,15 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
             nameTv = view.findViewById(R.id.nameTv);
             addressTv = view.findViewById(R.id.addressTv);
         }
+    }
+
+    public void setEventListener(EventListener eventListener) {
+        this.eventListener = eventListener;
+    }
+
+    public interface EventListener {
+
+        void callback(BluetoothDevice bluetoothEntity);
+
     }
 }
