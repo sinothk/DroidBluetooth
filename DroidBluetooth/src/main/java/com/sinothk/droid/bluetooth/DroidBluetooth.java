@@ -5,7 +5,7 @@ import android.content.Context;
 
 public class DroidBluetooth {
 
-    private static BluetoothAdapter blueadapter;
+    private static BluetoothAdapter blueAdapter;
     private static boolean support;
 
     /**
@@ -15,9 +15,9 @@ public class DroidBluetooth {
      */
     public static void init(Context baseContext) {
         //获取蓝牙适配器
-        blueadapter = BluetoothAdapter.getDefaultAdapter();
+        blueAdapter = BluetoothAdapter.getDefaultAdapter();
         //表示手机支持蓝牙
-        support = blueadapter != null;
+        support = blueAdapter != null;
     }
 
     /**
@@ -34,8 +34,8 @@ public class DroidBluetooth {
      */
     public static void open() {
         //判断本机蓝牙是否打开
-        if (!blueadapter.isEnabled()) {//如果没打开，则打开蓝牙
-            blueadapter.enable();
+        if (!blueAdapter.isEnabled()) {//如果没打开，则打开蓝牙
+            blueAdapter.enable();
         }
     }
 
@@ -44,8 +44,8 @@ public class DroidBluetooth {
      */
     public static void close() {
         //判断本机蓝牙是否打开
-        if (blueadapter.isEnabled()) {//如果没打开，则打开蓝牙
-            blueadapter.disable();
+        if (blueAdapter.isEnabled()) {//如果没打开，则打开蓝牙
+            blueAdapter.disable();
         }
     }
 
@@ -55,7 +55,7 @@ public class DroidBluetooth {
      * @return
      */
     public static boolean isOpen() {
-        return blueadapter.isEnabled();
+        return blueAdapter.isEnabled();
     }
 
 }
